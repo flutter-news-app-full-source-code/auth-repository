@@ -51,13 +51,20 @@ class HtAuthRepository {
 
   /// Initiates the sign-in/sign-up process using the email+code flow.
   ///
+  /// This method is context-aware and can signal a dashboard login.
   /// Delegates to the underlying [HtAuthClient]'s method.
   ///
   /// Throws [HtHttpException] or its subtypes on failure, as propagated
   /// from the client.
-  Future<void> requestSignInCode(String email) async {
+  Future<void> requestSignInCode(
+    String email, {
+    bool isDashboardLogin = false,
+  }) async {
     try {
-      await _authClient.requestSignInCode(email);
+      await _authClient.requestSignInCode(
+        email,
+        isDashboardLogin: isDashboardLogin,
+      );
     } on HtHttpException {
       rethrow; // Propagate client-level exceptions
     }
@@ -65,13 +72,22 @@ class HtAuthRepository {
 
   /// Verifies the email code provided by the user and completes sign-in/sign-up.
   ///
+  /// This method is context-aware and can signal a dashboard login.
   /// Delegates to the underlying [HtAuthClient]'s method.
   ///
   /// Throws [HtHttpException] or its subtypes on failure, as propagated
   /// from the client.
-  Future<User> verifySignInCode(String email, String code) async {
+  Future<User> verifySignInCode(
+    String email,
+    String code, {
+    bool isDashboardLogin = false,
+  }) async {
     try {
-      final authResponse = await _authClient.verifySignInCode(email, code);
+      final authResponse = await _authClient.verifySignInCode(
+        email,
+        code,
+        isDashboardLogin: isDashboardLogin,
+      );
       // authResponse is AuthSuccessResponse
       final token = authResponse.token;
       final user = authResponse.user;
