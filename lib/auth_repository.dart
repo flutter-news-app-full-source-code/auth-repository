@@ -2,4 +2,4 @@
 /// authentication operations.
 library;
 
-export 'src/ht_auth_repository.dart';
+export 'src/auth_repository.dart';

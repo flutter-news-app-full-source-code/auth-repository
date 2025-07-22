@@ -3,46 +3,46 @@
 
 import 'dart:async';
 
-import 'package:ht_auth_client/ht_auth_client.dart';
+import 'package:auth_client/auth_client.dart';
+import 'package:core/core.dart';
 import 'package:ht_kv_storage_service/ht_kv_storage_service.dart';
-import 'package:ht_shared/ht_shared.dart';
 
-/// {@template ht_auth_repository}
+/// {@template auth_repository}
 /// A repository that manages authentication operations.
 ///
-/// This repository acts as an abstraction layer over an [HtAuthClient],
+/// This repository acts as an abstraction layer over an [AuthClient],
 /// providing a consistent interface for authentication flows and
 /// propagating standardized exceptions.
 /// {@endtemplate}
-class HtAuthRepository {
-  /// {@macro ht_auth_repository}
+class AuthRepository {
+  /// {@macro auth_repository}
   ///
-  /// Requires an instance of [HtAuthClient] to handle the actual
+  /// Requires an instance of [AuthClient] to handle the actual
   /// authentication operations.
-  const HtAuthRepository({
-    required HtAuthClient authClient,
+  const AuthRepository({
+    required AuthClient authClient,
     required HtKVStorageService storageService,
   }) : _authClient = authClient,
        _storageService = storageService;
 
-  final HtAuthClient _authClient;
+  final AuthClient _authClient;
   final HtKVStorageService _storageService;
 
   /// Stream emitting the current authenticated [User] or `null`.
   ///
-  /// Delegates to the underlying [HtAuthClient]'s stream.
+  /// Delegates to the underlying [AuthClient]'s stream.
   Stream<User?> get authStateChanges => _authClient.authStateChanges;
 
   /// Retrieves the currently authenticated [User], if any.
   ///
-  /// Delegates to the underlying [HtAuthClient]'s method.
+  /// Delegates to the underlying [AuthClient]'s method.
   ///
-  /// Throws [HtHttpException] or its subtypes on failure, as propagated
+  /// Throws [HttpException] or its subtypes on failure, as propagated
   /// from the client.
   Future<User?> getCurrentUser() async {
     try {
       return await _authClient.getCurrentUser();
-    } on HtHttpException {
+    } on HttpException {
       rethrow; // Propagate client-level exceptions
     }
     // Catch-all for unexpected errors is generally avoided here,
@@ -52,9 +52,9 @@ class HtAuthRepository {
   /// Initiates the sign-in/sign-up process using the email+code flow.
   ///
   /// This method is context-aware and can signal a dashboard login.
-  /// Delegates to the underlying [HtAuthClient]'s method.
+  /// Delegates to the underlying [AuthClient]'s method.
   ///
-  /// Throws [HtHttpException] or its subtypes on failure, as propagated
+  /// Throws [HttpException] or its subtypes on failure, as propagated
   /// from the client.
   Future<void> requestSignInCode(
     String email, {
@@ -65,7 +65,7 @@ class HtAuthRepository {
         email,
         isDashboardLogin: isDashboardLogin,
       );
-    } on HtHttpException {
+    } on HttpException {
       rethrow; // Propagate client-level exceptions
     }
   }
@@ -73,9 +73,9 @@ class HtAuthRepository {
   /// Verifies the email code provided by the user and completes sign-in/sign-up.
   ///
   /// This method is context-aware and can signal a dashboard login.
-  /// Delegates to the underlying [HtAuthClient]'s method.
+  /// Delegates to the underlying [AuthClient]'s method.
   ///
-  /// Throws [HtHttpException] or its subtypes on failure, as propagated
+  /// Throws [HttpException] or its subtypes on failure, as propagated
   /// from the client.
   Future<User> verifySignInCode(
     String email,
@@ -93,7 +93,7 @@ class HtAuthRepository {
       final user = authResponse.user;
       await saveAuthToken(token);
       return user;
-    } on HtHttpException {
+    } on HttpException {
       rethrow; // Propagate client-level exceptions
     } on StorageException {
       rethrow; // Propagate storage exceptions during token save
@@ -102,10 +102,10 @@ class HtAuthRepository {
 
   /// Signs in the user anonymously.
   ///
-  /// Delegates to the underlying [HtAuthClient]'s method.
+  /// Delegates to the underlying [AuthClient]'s method.
   /// After successful sign-in, saves the token and returns the user.
   ///
-  /// Throws [HtHttpException] or its subtypes on failure, as propagated
+  /// Throws [HttpException] or its subtypes on failure, as propagated
   /// from the client.
   /// Throws [StorageException] if saving the token fails.
   Future<User> signInAnonymously() async {
@@ -116,7 +116,7 @@ class HtAuthRepository {
       final user = authResponse.user;
       await saveAuthToken(token);
       return user;
-    } on HtHttpException {
+    } on HttpException {
       rethrow; // Propagate client-level exceptions
     } on StorageException {
       rethrow; // Propagate storage exceptions during token save
@@ -125,17 +125,17 @@ class HtAuthRepository {
 
   /// Signs out the current user (whether authenticated normally or anonymously).
   ///
-  /// Delegates to the underlying [HtAuthClient]'s method.
+  /// Delegates to the underlying [AuthClient]'s method.
   /// After successful sign-out, clears the authentication token from storage.
   ///
-  /// Throws [HtHttpException] or its subtypes on failure, as propagated
+  /// Throws [HttpException] or its subtypes on failure, as propagated
   /// from the client.
   /// Throws [StorageException] if clearing the token fails.
   Future<void> signOut() async {
     try {
       await _authClient.signOut();
       await clearAuthToken();
-    } on HtHttpException {
+    } on HttpException {
       rethrow; // Propagate client-level exceptions
     } on StorageException {
       rethrow; // Propagate storage exceptions during token clear

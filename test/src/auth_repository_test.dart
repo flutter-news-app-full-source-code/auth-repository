@@ -3,15 +3,15 @@
 
 import 'dart:async';
 
-import 'package:ht_auth_client/ht_auth_client.dart';
-import 'package:ht_auth_repository/ht_auth_repository.dart';
+import 'package:auth_client/auth_client.dart';
+import 'package:auth_repository/auth_repository.dart';
+import 'package:core/core.dart';
 import 'package:ht_kv_storage_service/ht_kv_storage_service.dart';
-import 'package:ht_shared/ht_shared.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-// Mock HtAuthClient
-class MockHtAuthClient extends Mock implements HtAuthClient {}
+// Mock AuthClient
+class MockAuthClient extends Mock implements AuthClient {}
 
 // Mock HtKVStorageService
 class MockHtKVStorageService extends Mock implements HtKVStorageService {}
@@ -20,15 +20,15 @@ class MockHtKVStorageService extends Mock implements HtKVStorageService {}
 class MockUser extends Mock implements User {}
 
 void main() {
-  group('HtAuthRepository', () {
-    late HtAuthClient mockAuthClient;
+  group('AuthRepository', () {
+    late AuthClient mockAuthClient;
     late HtKVStorageService mockStorageService;
-    late HtAuthRepository authRepository;
+    late AuthRepository authRepository;
 
     setUp(() {
-      mockAuthClient = MockHtAuthClient();
+      mockAuthClient = MockAuthClient();
       mockStorageService = MockHtKVStorageService();
-      authRepository = HtAuthRepository(
+      authRepository = AuthRepository(
         authClient: mockAuthClient,
         storageService: mockStorageService,
       );
@@ -68,7 +68,7 @@ void main() {
       });
 
       test(
-        'delegates to client and re-throws HtHttpException on failure',
+        'delegates to client and re-throws HttpException on failure',
         () async {
           final exception = NetworkException();
           when(() => mockAuthClient.getCurrentUser()).thenThrow(exception);
@@ -95,7 +95,7 @@ void main() {
       });
 
       test(
-        'delegates to client and re-throws HtHttpException on failure',
+        'delegates to client and re-throws HttpException on failure',
         () async {
           const email = 'test@example.com';
           final exception = InvalidInputException('Invalid email');
@@ -153,7 +153,7 @@ void main() {
         },
       );
 
-      test('re-throws HtHttpException from client on client failure', () async {
+      test('re-throws HttpException from client on client failure', () async {
         final exception = AuthenticationException('Invalid code');
         when(
           () => mockAuthClient.verifySignInCode(email, code),
@@ -238,7 +238,7 @@ void main() {
         },
       );
 
-      test('re-throws HtHttpException from client on client failure', () async {
+      test('re-throws HttpException from client on client failure', () async {
         final exception = ServerException('Server error');
         when(() => mockAuthClient.signInAnonymously()).thenThrow(exception);
 
@@ -299,7 +299,7 @@ void main() {
         ).called(1);
       });
 
-      test('re-throws HtHttpException from client on client failure', () async {
+      test('re-throws HttpException from client on client failure', () async {
         final exception = OperationFailedException('Sign out failed');
         when(() => mockAuthClient.signOut()).thenThrow(exception);
 
