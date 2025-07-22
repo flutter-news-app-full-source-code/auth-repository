@@ -4,7 +4,7 @@
 [![style: very good analysis](https://img.shields.io/badge/style-very_good_analysis-B22C89.svg)](https://pub.dev/packages/very_good_analysis)
 [![License: PolyForm Free Trial](https://img.shields.io/badge/License-PolyForm%20Free%20Trial-blue)](https://polyformproject.org/licenses/free-trial/1.0.0)
 
-A repository package that provides an abstraction layer over authentication operations. It wraps an `AuthClient` implementation, offering a clean interface for authentication flows, ensuring standardized exception propagation, and handling authentication token persistence using `HtKVStorageService`.
+A repository package that provides an abstraction layer over authentication operations. It wraps an `AuthClient` implementation, offering a clean interface for authentication flows, ensuring standardized exception propagation, and handling authentication token persistence using `KvStorageService`.
 
 ## Getting Started
 
@@ -12,8 +12,9 @@ Add the package to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  auth_repository: any # Use the latest version
-```
+   auth-repository:
+    git:
+      url: https://github.com/flutter-news-app-full-source-code/auth-repository.git
 
 ## Features
 
@@ -25,23 +26,23 @@ dependencies:
     -   `verifySignInCode`: Verifies the code, saves the auth token, and returns the user.
     -   `signInAnonymously`: Signs in anonymously, saves the auth token, and returns the user.
     -   `signOut`: Signs out the user and clears the auth token.
--   Manages authentication token persistence internally using `HtKVStorageService`.
+-   Manages authentication token persistence internally using `KvStorageService`.
     -   Exposes `saveAuthToken(String token)`, `getAuthToken()`, and `clearAuthToken()` for direct token manipulation if needed, but these are typically handled by the main auth flow methods.
 -   Propagates standardized `HttpException`s from the underlying client and `StorageException`s from the storage service.
 
 ## Usage
 
-Instantiate `AuthRepository` by providing implementations of `AuthClient` and `HtKVStorageService`:
+Instantiate `AuthRepository` by providing implementations of `AuthClient` and `KvStorageService`:
 
 ```dart
 import 'package:auth_client/auth_client.dart';
 import 'package:auth_repository/auth_repository.dart';
-import 'package:ht_kv_storage_service/ht_kv_storage_service.dart';
+import 'package:kv_storage_service/kv_storage_service.dart';
 
 // Assume ConcreteAuthClient is an implementation of AuthClient
 final authClient = ConcreteAuthClient(...);
 
-// Assume ConcreteKVStorageService is an implementation of HtKVStorageService
+// Assume ConcreteKVStorageService is an implementation of KvStorageService
 final storageService = ConcreteKVStorageService(...);
 
 final authRepository = AuthRepository(

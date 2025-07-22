@@ -6,15 +6,15 @@ import 'dart:async';
 import 'package:auth_client/auth_client.dart';
 import 'package:auth_repository/auth_repository.dart';
 import 'package:core/core.dart';
-import 'package:ht_kv_storage_service/ht_kv_storage_service.dart';
+import 'package:kv_storage_service/kv_storage_service.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
 // Mock AuthClient
 class MockAuthClient extends Mock implements AuthClient {}
 
-// Mock HtKVStorageService
-class MockHtKVStorageService extends Mock implements HtKVStorageService {}
+// Mock KvStorageService
+class MockKvStorageService extends Mock implements KVStorageService {}
 
 // Mock User
 class MockUser extends Mock implements User {}
@@ -22,12 +22,12 @@ class MockUser extends Mock implements User {}
 void main() {
   group('AuthRepository', () {
     late AuthClient mockAuthClient;
-    late HtKVStorageService mockStorageService;
+    late KVStorageService mockStorageService;
     late AuthRepository authRepository;
 
     setUp(() {
       mockAuthClient = MockAuthClient();
-      mockStorageService = MockHtKVStorageService();
+      mockStorageService = MockKvStorageService();
       authRepository = AuthRepository(
         authClient: mockAuthClient,
         storageService: mockStorageService,

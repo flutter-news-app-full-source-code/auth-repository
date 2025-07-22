@@ -13,9 +13,9 @@ dependencies:
   core:
     git:
       url: https://github.com/flutter-news-app-full-source-code/core.git
-  ht_kv_storage_service:
+  kv_storage_service:
     git:
-      url: https://github.com/flutter-news-app-full-source-code/ht-kv-storage-service.git
+      url: https://github.com/flutter-news-app-full-source-code/kv-storage-service.git
 
 dev_dependencies:
   mocktail: ^1.0.4

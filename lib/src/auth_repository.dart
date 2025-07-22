@@ -5,7 +5,7 @@ import 'dart:async';
 
 import 'package:auth_client/auth_client.dart';
 import 'package:core/core.dart';
-import 'package:ht_kv_storage_service/ht_kv_storage_service.dart';
+import 'package:kv_storage_service/kv_storage_service.dart';
 
 /// {@template auth_repository}
 /// A repository that manages authentication operations.
@@ -21,12 +21,12 @@ class AuthRepository {
   /// authentication operations.
   const AuthRepository({
     required AuthClient authClient,
-    required HtKVStorageService storageService,
+    required KVStorageService storageService,
   }) : _authClient = authClient,
        _storageService = storageService;
 
   final AuthClient _authClient;
-  final HtKVStorageService _storageService;
+  final KVStorageService _storageService;
 
   /// Stream emitting the current authenticated [User] or `null`.
   ///
