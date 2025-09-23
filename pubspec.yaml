@@ -10,12 +10,15 @@ dependencies:
   auth_client:
     git:
       url: https://github.com/flutter-news-app-full-source-code/auth-client.git
+      ref: fec23f405d58d4915638783d972b542d3faf96b2
   core:
     git:
       url: https://github.com/flutter-news-app-full-source-code/core.git
+      ref: 828b984517edec069266579c624c7af9fbe0e2ac
   kv_storage_service:
     git:
       url: https://github.com/flutter-news-app-full-source-code/kv-storage-service.git
+      ref: 3bcba6b11fe0480e06e1bedf6eab4159a7c59c53
 
 dev_dependencies:
   mocktail: ^1.0.4
