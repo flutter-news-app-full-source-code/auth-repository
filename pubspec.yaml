@@ -2,6 +2,7 @@ name: auth_repository
 description: A repository package that provides an abstraction layer over authentication operations.
 repository: https://github.com/flutter-news-app-full-source-code/auth-repository
 publish_to: none
+version: 1.0.1
 
 environment:
   sdk: ^3.9.0
@@ -10,15 +11,15 @@ dependencies:
   auth_client:
     git:
       url: https://github.com/flutter-news-app-full-source-code/auth-client.git
-      ref: v1.0.0
+      ref: v1.0.1
   core:
     git:
       url: https://github.com/flutter-news-app-full-source-code/core.git
-      ref: v1.2.0
+      ref: v1.3.1
   kv_storage_service:
     git:
       url: https://github.com/flutter-news-app-full-source-code/kv-storage-service.git
-      ref: v1.0.0
+      ref: v1.0.1
 
 dev_dependencies:
   mocktail: ^1.0.4
