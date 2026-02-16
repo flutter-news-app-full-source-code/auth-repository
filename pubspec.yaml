@@ -11,7 +11,7 @@ dependencies:
   auth_client:
     git:
       url: https://github.com/flutter-news-app-full-source-code/auth-client.git
-      ref: v1.0.1
+      ref: 58cc4201ceb52f74e0b639106276e396e4ff03a6
   core:
     git:
       url: https://github.com/flutter-news-app-full-source-code/core.git

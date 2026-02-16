@@ -159,9 +159,9 @@ void main() {
           () => mockAuthClient.verifySignInCode(email, code),
         ).thenThrow(exception);
 
-        expect(
+        await expectLater(
           () => authRepository.verifySignInCode(email, code),
-          throwsA(equals(exception)),
+          throwsA(exception),
         );
         verify(() => mockAuthClient.verifySignInCode(email, code)).called(1);
         verifyNever(
@@ -189,12 +189,17 @@ void main() {
             ),
           ).thenThrow(exception);
 
-          expect(
+          await expectLater(
             () => authRepository.verifySignInCode(email, code),
-            throwsA(equals(exception)),
+            throwsA(exception),
           );
           verify(() => mockAuthClient.verifySignInCode(email, code)).called(1);
-          // Removed verify for mockStorageService.writeString here
+          verify(
+            () => mockStorageService.writeString(
+              key: StorageKey.authToken.stringValue,
+              value: testToken,
+            ),
+          ).called(1);
         },
       );
     });
@@ -242,9 +247,9 @@ void main() {
         final exception = ServerException('Server error');
         when(() => mockAuthClient.signInAnonymously()).thenThrow(exception);
 
-        expect(
+        await expectLater(
           () => authRepository.signInAnonymously(),
-          throwsA(equals(exception)),
+          throwsA(exception),
         );
         verify(() => mockAuthClient.signInAnonymously()).called(1);
         verifyNever(
@@ -272,12 +277,17 @@ void main() {
             ),
           ).thenThrow(exception);
 
-          expect(
+          await expectLater(
             () => authRepository.signInAnonymously(),
-            throwsA(equals(exception)),
+            throwsA(exception),
           );
           verify(() => mockAuthClient.signInAnonymously()).called(1);
-          // Removed verify for mockStorageService.writeString here
+          verify(
+            () => mockStorageService.writeString(
+              key: StorageKey.authToken.stringValue,
+              value: testToken,
+            ),
+          ).called(1);
         },
       );
     });
@@ -303,7 +313,10 @@ void main() {
         final exception = OperationFailedException('Sign out failed');
         when(() => mockAuthClient.signOut()).thenThrow(exception);
 
-        expect(() => authRepository.signOut(), throwsA(equals(exception)));
+        await expectLater(
+          () => authRepository.signOut(),
+          throwsA(exception),
+        );
         verify(() => mockAuthClient.signOut()).called(1);
         verifyNever(() => mockStorageService.delete(key: any(named: 'key')));
       });
@@ -321,9 +334,72 @@ void main() {
             ),
           ).thenThrow(exception);
 
-          expect(() => authRepository.signOut(), throwsA(equals(exception)));
+          await expectLater(
+            () => authRepository.signOut(),
+            throwsA(exception),
+          );
           verify(() => mockAuthClient.signOut()).called(1);
-          // Removed verify for mockStorageService.delete here
+          verify(
+            () => mockStorageService.delete(
+              key: StorageKey.authToken.stringValue,
+            ),
+          ).called(1);
+        },
+      );
+    });
+
+    group('deleteAccount', () {
+      test('calls client deleteAccount and clears token on success', () async {
+        when(() => mockAuthClient.deleteAccount()).thenAnswer((_) async {});
+        when(
+          () =>
+              mockStorageService.delete(key: StorageKey.authToken.stringValue),
+        ).thenAnswer((_) async {});
+
+        await authRepository.deleteAccount();
+
+        verify(() => mockAuthClient.deleteAccount()).called(1);
+        verify(
+          () =>
+              mockStorageService.delete(key: StorageKey.authToken.stringValue),
+        ).called(1);
+      });
+
+      test('re-throws HttpException from client on client failure', () async {
+        final exception = UnauthorizedException('No user');
+        when(() => mockAuthClient.deleteAccount()).thenThrow(exception);
+
+        await expectLater(
+          () => authRepository.deleteAccount(),
+          throwsA(exception),
+        );
+        verify(() => mockAuthClient.deleteAccount()).called(1);
+        verifyNever(() => mockStorageService.delete(key: any(named: 'key')));
+      });
+
+      test(
+        're-throws StorageException from storageService on token clear failure',
+        () async {
+          when(() => mockAuthClient.deleteAccount()).thenAnswer((_) async {});
+          final exception = StorageDeleteException(
+            StorageKey.authToken.stringValue,
+          );
+          when(
+            () => mockStorageService.delete(
+              key: StorageKey.authToken.stringValue,
+            ),
+          ).thenThrow(exception);
+
+          await expectLater(
+            () => authRepository.deleteAccount(),
+            throwsA(exception),
+          );
+          verify(() => mockAuthClient.deleteAccount()).called(1);
+          verify(
+            () => mockStorageService.delete(
+              key: StorageKey.authToken.stringValue,
+            ),
+          ).called(1);
         },
       );
     });

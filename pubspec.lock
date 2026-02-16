@@ -37,8 +37,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "v1.0.1"
-      resolved-ref: "605212aa4bf2a106691f447b824c66bb5218205c"
+      ref: "58cc4201ceb52f74e0b639106276e396e4ff03a6"
+      resolved-ref: "58cc4201ceb52f74e0b639106276e396e4ff03a6"
       url: "https://github.com/flutter-news-app-full-source-code/auth-client.git"
     source: git
     version: "1.0.1"

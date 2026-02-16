@@ -142,6 +142,26 @@ class AuthRepository {
     }
   }
 
+  /// Deletes the current user's account permanently.
+  ///
+  /// This is a destructive and irreversible action.
+  /// Delegates to the underlying [AuthClient]'s method.
+  /// After successful deletion, clears the authentication token from storage.
+  ///
+  /// Throws [HttpException] or its subtypes on failure, as propagated
+  /// from the client.
+  /// Throws [StorageException] if clearing the token fails.
+  Future<void> deleteAccount() async {
+    try {
+      await _authClient.deleteAccount();
+      await clearAuthToken();
+    } on HttpException {
+      rethrow; // Propagate client-level exceptions
+    } on StorageException {
+      rethrow; // Propagate storage exceptions during token clear
+    }
+  }
+
   /// Saves the authentication token to storage.
   ///
   /// Throws [StorageWriteException] if the write operation fails.
